@@ -8,6 +8,7 @@ import glob
 import serial
 
 import Python_Coloring
+import CSharp_Coloring
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
@@ -70,6 +71,7 @@ class Signal(QObject):
 text = QTextEdit
 text2 = QTextEdit
 
+
 #
 #
 #
@@ -88,9 +90,6 @@ class text_widget(QWidget):
     def itUI(self):
         global text
         text = QTextEdit()
-        QFileInfo fileInfo(f.fileName())
-        QString filename(fileInfo.fileName())
-        Python_Coloring.PythonHighlighter(text)
         hbox = QHBoxLayout()
         hbox.addWidget(text)
         self.setLayout(hbox)
@@ -207,6 +206,22 @@ class Widget(QWidget):
             with f:
                 data = f.read()
                 text.setText(data)
+                print(f.name)
+
+                #get selected filename
+                filename = f.name
+                CSsubstring = ".cs"
+
+                #check if selected file name contains the substring ".cs" apply CSharpColoring
+                if CSsubstring in filename:
+                    CSharp_Coloring.CSharpHighlighter(text)
+
+                #for all other texts apply standard coloring
+                else:
+                    Python_Coloring.PythonHighlighter(text)
+
+
+
 
 #
 #
@@ -315,6 +330,8 @@ class UI(QMainWindow):
         self.show()
 
     ###########################        Start OF the Functions          ##################
+
+    #edited this part to make the IDE run python programs properly
     def Run(self):
         if self.port_flag == 0:
             mytext = text.toPlainText()
